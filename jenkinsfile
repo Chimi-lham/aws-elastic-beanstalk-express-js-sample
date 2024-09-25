@@ -1,0 +1,39 @@
+pipeline {
+    agent {
+        // Use Node.js 16 Docker image as the build agent
+        docker {
+            image 'node:16'
+        }
+    }
+        
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                // Install the required dependencies
+                sh 'npm install --save'
+            }
+        }
+        
+        stage('Build Application') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+    post {
+        always {
+            // Always clean up workspace after pipeline finishes
+            cleanWs()
+        }
+        
+        success {
+            // Notify success (you can integrate Slack or email notifications if needed)
+            echo 'Build and Deployment successful!'
+        }
+
+        failure {
+            // Notify failure (also integrate notifications here if needed)
+            echo 'Build or Deployment failed!'
+        }
+    }
+}
