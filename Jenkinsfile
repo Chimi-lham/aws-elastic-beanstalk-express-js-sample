@@ -11,6 +11,7 @@ pipeline {
             steps {
                 // Install the required dependencies
                 sh 'npm install --save'
+                sh 'npm audit fix'
             }
         }
 
@@ -18,7 +19,6 @@ pipeline {
             steps {
                 // Install Snyk globally using npm
                 sh 'npm install -g snyk'
-                sh 'npm audit fix'
 
             }
         }
