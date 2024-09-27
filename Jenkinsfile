@@ -23,13 +23,6 @@ pipeline {
             }
         }
 
-        stage('Start Application') {
-            steps {
-                // Start the application using the npm start command
-                echo 'Starting the application...'
-                sh 'npm start'
-            }
-        }
     }
 
     post {
