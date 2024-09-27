@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script{
                 echo 'building project'
-                sh 'npm run build'
+                sh 'CI=false npm run build'
                 }
             }
         }
