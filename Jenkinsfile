@@ -15,13 +15,6 @@ pipeline {
             }
         }
 
-        stage('Install Snyk') {
-            steps {
-                // Install Snyk globally using npm
-                sh 'npm install -g snyk'
-
-            }
-        }
 
         stage('Build Application') {
             steps {
@@ -36,16 +29,7 @@ pipeline {
             // Always clean up the workspace after the pipeline finishes
             cleanWs()
         }
-
-        success {
-            // Notify success (optional: integrate notifications like Slack or email)
-            echo 'Build and deployment successful!'
-        }
-
-        failure {
-            // Notify failure (optional: integrate notifications here as well)
-            echo 'Build or deployment failed!'
-        }
+        
     }
 }
 
