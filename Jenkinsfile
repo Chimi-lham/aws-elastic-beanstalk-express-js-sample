@@ -14,6 +14,14 @@ pipeline {
             }
         }
 
+        stage('Install Snyk') {
+            steps {
+                // Install Snyk globally using npm
+                sh 'npm install -g snyk'
+                sh 'npm audit fix'
+
+            }
+        }
         stage('Scan for Vulnerabilities with Snyk') {
             steps {
                 // Run Snyk to scan for vulnerabilities
