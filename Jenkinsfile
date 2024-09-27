@@ -1,33 +1,58 @@
 pipeline {
-    agent any
-    
+    agent {
+        // Use Node.js 16 Docker image as the build agent
+        docker {
+            image 'node:16'
+        }
+    }
+
     stages {
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Building the project...'
-                // You can add build commands here, like 'mvn clean install' or 'npm install'
+                // Install the required dependencies
+                sh 'npm install --save'
             }
         }
-        
-        stage('Test') {
+
+        stage('Scan for Vulnerabilities with Snyk') {
             steps {
-                echo 'Running tests...'
-                // Add test commands here, like 'mvn test' or 'npm test'
+                // Run Snyk to scan for vulnerabilities
+                sh 'snyk test --all-projects' // Scan for vulnerabilities in all projects
+            }
+            post {
+                success {
+                    // Snyk found no critical vulnerabilities
+                    echo 'No critical vulnerabilities found in dependencies.'
+                }
+                failure {
+                    // Snyk found critical vulnerabilities
+                    error 'Critical vulnerabilities detected! Halting the build.'
+                }
             }
         }
-        
-        stage('Deploy') {
+
+        stage('Build Application') {
             steps {
-                echo 'Deploying the project...'
-                // Add deployment steps here, like copying files, or 'docker-compose up'
+                // Build the application
+                sh 'npm run build'
             }
         }
     }
-    
+
     post {
         always {
-            echo 'Cleaning up...'
-            // Add any clean-up steps here
+            // Always clean up the workspace after the pipeline finishes
+            cleanWs()
+        }
+
+        success {
+            // Notify success (optional: integrate notifications like Slack or email)
+            echo 'Build and deployment successful!'
+        }
+
+        failure {
+            // Notify failure (optional: integrate notifications here as well)
+            echo 'Build or deployment failed!'
         }
     }
 }
