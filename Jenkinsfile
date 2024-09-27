@@ -14,7 +14,14 @@ pipeline {
                 sh 'npm audit fix'
             }
         }
-
+        
+        stage('Check Available Scripts') {
+            steps {
+                // Print available npm scripts to debug
+                echo 'checking avaliable scripts'
+                sh 'npm run'
+            }
+        }
 
         stage('Build Application') {
             steps {
