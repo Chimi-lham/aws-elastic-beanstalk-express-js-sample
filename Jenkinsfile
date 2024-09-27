@@ -22,7 +22,23 @@ pipeline {
                 sh 'npm run'
             }
         }
-
+         stage('Scan for Vulnerabilities with Snyk') {
+            steps {
+                // Run Snyk to scan for vulnerabilities
+                sh 'snyk test --all-projects' // Scan for vulnerabilities in all projects
+            }
+            post {
+                success {
+                    // Snyk found no critical vulnerabilities
+                    echo 'No critical vulnerabilities found in dependencies.'
+                }
+                failure {
+                    // Snyk found critical vulnerabilities
+                    error 'Critical vulnerabilities detected! Halting the build.'
+                }
+            }
+        }
+        
     }
 
     post {
