@@ -23,12 +23,11 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
+        stage('Start Application') {
             steps {
-                script{
-                echo 'building project'
-                sh 'CI=false npm run build'
-                }
+                // Start the application using the npm start command
+                echo 'Starting the application...'
+                sh 'npm start'
             }
         }
     }
