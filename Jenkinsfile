@@ -17,14 +17,17 @@ pipeline {
         
          stage('Scan for Vulnerabilities with Snyk') {
             steps {
-               echo 'Testing...'
-	        snykSecurity(
-		  snykInstallation: 'synk@latest',
-		  snykTokenId: 'synk-api-token',
-		  // place other parameters here
-		)
-                
-                //sh 'snyk test --all-projects' // Scan for vulnerabilities in all projects
+               echo 'Testing for vulnerabilities using Snyk...'
+        
+	        // Install Snyk in the pipeline if it's not already available
+	        sh 'npm install -g snyk'
+	        
+	        // Authenticate Snyk using your token
+	        sh 'snyk auth ${SNYK_TOKEN}'
+	        
+	        // Perform the Snyk test (customize the command to your needs)
+	        //sh 'snyk test --all-projects'
+	        }
             }
             post {
                 success {
