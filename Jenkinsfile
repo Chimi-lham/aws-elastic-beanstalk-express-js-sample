@@ -14,7 +14,7 @@ pipeline {
             steps {
                 // Install the required dependencies
                 sh 'npm install --save'
-                sh 'npm install -g snyk'  
+                //sh 'npm install -g snyk'  
                 sh 'npm audit fix'
             }
         }
