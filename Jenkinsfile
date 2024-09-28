@@ -36,10 +36,6 @@ pipeline {
                     // Snyk found no critical vulnerabilities
                     echo 'No critical vulnerabilities found in dependencies.'
                 }
-                failure {
-                    // Snyk found critical vulnerabilities
-                    error 'Critical vulnerabilities detected! Halting the build.'
-                }
             }
         }
            
@@ -52,4 +48,5 @@ pipeline {
         }
         
     }
+}
 }
