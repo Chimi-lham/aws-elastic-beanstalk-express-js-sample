@@ -39,8 +39,6 @@ pipeline {
         }
            
         }
-        
-    }
 
     post {
         always {
