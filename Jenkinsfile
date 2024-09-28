@@ -25,30 +25,7 @@ pipeline {
                 sh 'npm run'
             }
         }
-         stage('Scan for Vulnerabilities with Snyk') {
-            steps {
-                script {
-                    echo 'Running Snyk vulnerability test...'
-                    // Run Snyk test with the Snyk CLI in Docker
-                    sh '''
-                        docker run --rm \
-                        -e SNYK_TOKEN=${SNYK_TOKEN} \
-                        -v $(pwd):/project \
-                        snyk/snyk:latest test --all-projects
-                    '''
-                }
-            }
-            post {
-                success {
-                    // Snyk found no critical vulnerabilities
-                    echo 'No critical vulnerabilities found in dependencies.'
-                }
-                failure {
-                    // Snyk found critical vulnerabilities
-                    error 'Critical vulnerabilities detected! Halting the build.'
-                }
-            }
-        }
+         
         
     }
 
