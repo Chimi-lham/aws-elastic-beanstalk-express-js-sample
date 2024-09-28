@@ -6,7 +6,6 @@ pipeline {
         }
     }
     environment {
-        // Inject Snyk token from Jenkins secrets
         SNYK_TOKEN = credentials('SNYK_API_TOKEN')  // Use the token stored in Jenkins as a secret
     }
 
@@ -29,8 +28,14 @@ pipeline {
         }
          stage('Scan for Vulnerabilities with Snyk') {
             steps {
-                // Run Snyk to scan for vulnerabilities
-                sh 'snyk test --all-projects' // Scan for vulnerabilities in all projects
+               echo 'Testing...'
+	        snykSecurity(
+		  snykInstallation: 'synk-api-token',
+		  snykTokenId: 'synk-api-token',
+		  // place other parameters here
+		)
+                
+                //sh 'snyk test --all-projects' // Scan for vulnerabilities in all projects
             }
             post {
                 success {
