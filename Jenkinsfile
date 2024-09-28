@@ -30,7 +30,7 @@ pipeline {
             steps {
                echo 'Testing...'
 	        snykSecurity(
-		  snykInstallation: 'synk-api-token',
+		  snykInstallation: 'synk@latest',
 		  snykTokenId: 'synk-api-token',
 		  // place other parameters here
 		)
