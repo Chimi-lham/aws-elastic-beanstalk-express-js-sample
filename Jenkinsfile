@@ -21,7 +21,7 @@ pipeline {
             steps {
               script {
                 // Retrieve Snyk API token securely from Jenkins credentials
-                withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
+                withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
                     
                     // Install Snyk CLI if needed
                     sh 'npm install -g snyk'
