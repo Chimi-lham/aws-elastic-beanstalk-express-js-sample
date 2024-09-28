@@ -5,9 +5,6 @@ pipeline {
             image 'node:16'
         }
     }
-    environment {
-        SNYK_TOKEN = credentials('SNYK_API_TOKEN') // Securely load Snyk API token from Jenkins credentials
-    }
    
     stages {
         stage('Install Dependencies') {
@@ -18,25 +15,16 @@ pipeline {
             }
         }
         
-        stage('Check Available Scripts') {
-            steps {
-                // Print available npm scripts to debug
-                echo 'checking avaliable scripts'
-                sh 'npm run'
-            }
-        }
          stage('Scan for Vulnerabilities with Snyk') {
             steps {
-                script {
-                    echo 'Running Snyk vulnerability test...'
-                    // Run Snyk test with the Snyk CLI in Docker
-                    sh '''
-                        docker run --rm \
-                        -e SNYK_TOKEN=${SNYK_TOKEN} \
-                        -v $(pwd):/project \
-                        snyk/snyk:latest test --all-projects
-                    '''
-                }
+               echo 'Testing...'
+	        snykSecurity(
+		  snykInstallation: 'synk@latest',
+		  snykTokenId: 'synk-api-token',
+		  // place other parameters here
+		)
+                
+                //sh 'snyk test --all-projects' // Scan for vulnerabilities in all projects
             }
             post {
                 success {
@@ -49,16 +37,16 @@ pipeline {
                 }
             }
         }
+           
+        }
         
     }
 
     post {
         always {
-            node('') {
-                // Always clean up the workspace after the pipeline finishes
-                cleanWs()
-            }
+            // Always clean up the workspace after the pipeline finishes
+            cleanWs()
         }
+        
     }
 }
-
