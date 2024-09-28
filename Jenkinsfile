@@ -5,10 +5,7 @@ pipeline {
             image 'node:16'
         }
     }
-    environment {
-        SNYK_TOKEN = credentials('SNYK_API_TOKEN')  // Use the token stored in Jenkins as a secret
-    }
-
+   
     stages {
         stage('Install Dependencies') {
             steps {
