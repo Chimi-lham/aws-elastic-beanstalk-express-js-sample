@@ -30,7 +30,7 @@ pipeline {
                     sh 'snyk auth ${SNYK_TOKEN}'
                     
                     // Perform vulnerability scan
-                    sh 'snyk test --all-projects'
+                    sh 'snyk test --all-projects > snyk-report.txt'
                 }
               }
             }
@@ -49,6 +49,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'snyk-report.txt', allowEmptyArchive: true
             // Always clean up the workspace after the pipeline finishes
             cleanWs()
         }
