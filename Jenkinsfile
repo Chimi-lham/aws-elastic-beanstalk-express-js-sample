@@ -34,7 +34,7 @@ pipeline {
                 script {
                     // Retrieve Snyk API token securely from Jenkins credentials
                     withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
-                        // Install Snyk CLI if needed
+  
                         sh 'npm install -g snyk'
                         
                         // Authenticate with Snyk using the token
@@ -44,11 +44,10 @@ pipeline {
                         def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
                         writeFile(file: 'snyk-report.txt', text: snykOutput)
 
-                        // Log the results
-                        def snykLog = "Snyk scan completed.\n"
-                        snykLog += "Snyk Scan Results:\n"
-                        snykLog += snykOutput
-                        writeFile(file: 'build-log.txt', text: snykLog, append: true)
+                        // Append the results to the build log
+                        writeFile(file: 'build-log.txt', text: "Snyk scan completed.\n", append: true)
+                        writeFile(file: 'build-log.txt', text: "Snyk Scan Results:\n", append: true)
+                        writeFile(file: 'build-log.txt', text: snykOutput, append: true)
                     }
                 }
             }
