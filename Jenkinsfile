@@ -11,20 +11,28 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                // Installing the required dependencies
-                def logMessage = "Installing dependencies...\n"
+                script {
+                    // Initialize the log file
+                    def logMessage = "Installing dependencies...\n"
                     writeFile(file: 'build-log.txt', text: logMessage)
-                sh 'npm install --save'
-                sh 'npm audit fix'
-                logMessage = "Dependencies installed.\n"
+
+                    // Install the required dependencies
+                    sh 'npm install --save'
+                    logMessage = "Dependencies installed.\n"
                     writeFile(file: 'build-log.txt', text: logMessage, append: true)
+
+                    // Fix any audit issues
+                    sh 'npm audit fix'
+                    logMessage = "Audit fix completed.\n"
+                    writeFile(file: 'build-log.txt', text: logMessage, append: true)
+                }
             }
         }
         
         stage('Scan for Vulnerabilities with Snyk') {
             steps {
-              script {
-                / Retrieve Snyk API token securely from Jenkins credentials
+                script {
+                    // Retrieve Snyk API token securely from Jenkins credentials
                     withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
                         // Install Snyk CLI if needed
                         sh 'npm install -g snyk'
@@ -41,13 +49,13 @@ pipeline {
                         snykLog += "Snyk Scan Results:\n"
                         snykLog += snykOutput
                         writeFile(file: 'build-log.txt', text: snykLog, append: true)
+                    }
                 }
-              }
             }
             post {
                 success {
                     script {
-                        writeFile(file: 'build-log.txt', text: "No critical vulnerabilities found in 	dependencies.\n", append: true)
+                        writeFile(file: 'build-log.txt', text: "No critical vulnerabilities found in dependencies.\n", append: true)
                     }
                 }
                 failure {
@@ -70,3 +78,4 @@ pipeline {
         }
     }
 }
+
