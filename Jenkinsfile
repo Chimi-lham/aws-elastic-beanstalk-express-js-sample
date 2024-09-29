@@ -24,7 +24,7 @@ pipeline {
                     sh 'echo "Audit fix completed." >> build-log.txt'
 
                     // Log that Snyk will be used next
-                    sh 'echo "Starting Snyk vulnerability scan..." >> build-log.txt
+                    sh 'echo "Starting Snyk vulnerability scan..." >> build-log.txt'
                 }
             }
         }
