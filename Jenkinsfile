@@ -44,7 +44,6 @@ pipeline {
                    // Append the results to the build log
                     sh 'echo "Snyk scan completed." >> build-log.txt'
                     sh "echo 'Snyk Scan Results:\n${snykOutput}' >> build-log.txt"
-
                     }
                 }
             }
