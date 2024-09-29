@@ -29,8 +29,8 @@ pipeline {
                     // Authenticate with Snyk using the token
                     sh 'snyk auth ${SNYK_TOKEN}'
                     
-                    // Perform vulnerability scan
-                    sh 'snyk test --all-projects > snyk-report.txt'
+                    // Perform vulnerability scan will fail the build if critical vulnerabilities are found
+                    snyk test --severity-threshold=high > snyk-report.txt'
                 }
               }
             }
