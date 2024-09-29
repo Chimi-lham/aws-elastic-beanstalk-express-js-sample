@@ -12,7 +12,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                                        
                     sh 'echo "Starting dependency installation..." > build-log.txt'
 
                     // Install the required dependencies
@@ -33,17 +32,17 @@ pipeline {
                 script {
                     // Retrieve Snyk API token securely from Jenkins credentials
                     withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
-  
-                    sh 'npm install -g snyk'
-                    
-                    // Authenticate with Snyk using the token
-                    sh 'snyk auth ${SNYK_TOKEN}'
-                    
-                    // Perform vulnerability scan and capture output
-                    def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
-                   // Append the results to the build log
-                    sh 'echo "Snyk scan completed." >> build-log.txt'
-                    sh "echo 'Snyk Scan Results:\n${snykOutput}' >> build-log.txt"
+
+                        sh 'npm install -g snyk'
+
+                        // Authenticate with Snyk using the token
+                        sh 'snyk auth ${SNYK_TOKEN}'
+
+                        // Perform vulnerability scan and capture output
+                        def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
+                        // Append the results to the build log
+                        sh 'echo "Snyk scan completed." >> build-log.txt'
+                        sh "echo 'Snyk Scan Results:\n${snykOutput}' >> build-log.txt"
                     }
                 }
             }
@@ -55,16 +54,18 @@ pipeline {
                 }
                 failure {
                     script {
-                         sh 'echo "Vulnerabilities found or Snyk scan failed. Review the Snyk report for details." >> build-log.txt'
+                        sh 'echo "Vulnerabilities found or Snyk scan failed. Review the Snyk report for details." >> build-log.txt'
                     }
                 }
             }
-            stage('Synk Monitor'){
-            steps{
-              script{
-              //monitor the project for security issues
-               sh 'synk monitor'
-              }}
+        }
+
+        stage('Snyk Monitor') {
+            steps {
+                script {
+                    // Monitor the project for security issues
+                    sh 'snyk monitor'
+                }
             }
         }
     }
@@ -72,7 +73,7 @@ pipeline {
     post {
         always {
             // Archive the log and Snyk report
-            archiveArtifacts artifacts: 'build-log.txt', allowEmptyArchive: true           
+            archiveArtifacts artifacts: 'build-log.txt', allowEmptyArchive: true
             // Clean up the workspace after the pipeline finishes
             cleanWs()
         }
