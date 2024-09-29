@@ -24,7 +24,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
                     
                     // Install Snyk CLI if needed
-                    sh 'npm install -g snyk'
+                    sh 'npm install -g snyk > snyk-report.txt'
                     
                     // Authenticate with Snyk using the token
                     sh 'snyk auth ${SNYK_TOKEN}'
