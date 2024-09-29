@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        // Use Node.js 16 Docker image as the build agent
+        // Node.js 16 Docker image as the build agent
         docker {
             image 'node:16'
             // Ensures that the Docker container has internet access
@@ -21,9 +21,8 @@ pipeline {
 
                     // Fix any audit issues
                     sh 'npm audit fix'
+                    // Append the results to the build log
                     sh 'echo "Audit fix completed." >> build-log.txt'
-
-                    // Log that Snyk will be used next
                     sh 'echo "Starting Snyk vulnerability scan..." >> build-log.txt'
                 }
             }
@@ -42,9 +41,7 @@ pipeline {
                     
                     // Perform vulnerability scan and capture output
                     def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
-                    writeFile(file: 'snyk-report.txt', text: snykOutput)
-
-                    // Append the results to the build log
+                   // Append the results to the build log
                     sh 'echo "Snyk scan completed." >> build-log.txt'
                     sh "echo 'Snyk Scan Results:\n${snykOutput}' >> build-log.txt"
 
@@ -69,9 +66,7 @@ pipeline {
     post {
         always {
             // Archive the log and Snyk report
-            archiveArtifacts artifacts: 'build-log.txt', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'snyk-report.txt', allowEmptyArchive: true
-            
+            archiveArtifacts artifacts: 'build-log.txt', allowEmptyArchive: true           
             // Clean up the workspace after the pipeline finishes
             cleanWs()
         }
