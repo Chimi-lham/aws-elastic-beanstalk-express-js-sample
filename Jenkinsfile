@@ -13,15 +13,18 @@ pipeline {
             steps {
                 script {
                                         
+                    sh 'echo "Starting dependency installation..." > build-log.txt'
+
                     // Install the required dependencies
                     sh 'npm install --save'
-                    logMessage = "Dependencies installed.\n"
-                    writeFile(file: 'build-log.txt', text: logMessage, append: true)
+                    sh 'echo "Dependencies installed successfully." >> build-log.txt'
 
                     // Fix any audit issues
                     sh 'npm audit fix'
-                    logMessage = "Audit fix completed.\n"
-                    writeFile(file: 'build-log.txt', text: logMessage, append: true)
+                    sh 'echo "Audit fix completed." >> build-log.txt'
+
+                    // Log that Snyk will be used next
+                    sh 'echo "Starting Snyk vulnerability scan..." >> build-log.txt
                 }
             }
         }
@@ -32,14 +35,13 @@ pipeline {
                     // Retrieve Snyk API token securely from Jenkins credentials
                     withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
   
-                        sh 'npm install -g snyk'
-                        
-                        // Authenticate with Snyk using the token
-                        sh "snyk auth ${SNYK_TOKEN}"
-                        
-                        // Perform vulnerability scan and save output
-                        def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
-                        writeFile(file: 'snyk-report.txt', text: snykOutput)
+                    sh 'npm install -g snyk'
+                    
+                    // Authenticate with Snyk using the token
+                    sh 'snyk auth ${SNYK_TOKEN}'
+                    
+                    // Perform vulnerability scan will fail the build if critical vulnerabilities are found
+                    sh 'snyk test --severity-threshold=high > snyk-report.txt'
 
                     }
                 }
