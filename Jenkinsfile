@@ -32,12 +32,9 @@ pipeline {
                 script {
                     // Retrieve Snyk API token securely from Jenkins credentials
                     withCredentials([string(credentialsId: 'SNYK_API_TOKEN', variable: 'SNYK_TOKEN')]) {
-
                         sh 'npm install -g snyk'
-
                         // Authenticate with Snyk using the token
                         sh 'snyk auth ${SNYK_TOKEN}'
-
                         // Perform vulnerability scan and capture output
                         def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
                         // Append the results to the build log
@@ -66,6 +63,11 @@ pipeline {
                     // Monitor the project for security issues
                     sh 'snyk monitor'
                 }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo'Deploying application....'
             }
         }
     }
