@@ -40,8 +40,13 @@ pipeline {
                     // Authenticate with Snyk using the token
                     sh 'snyk auth ${SNYK_TOKEN}'
                     
-                    // Perform vulnerability scan will fail the build if critical vulnerabilities are found
-                    sh 'snyk test --severity-threshold=high > snyk-report.txt'
+                    // Perform vulnerability scan and capture output
+                    def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
+                    writeFile(file: 'snyk-report.txt', text: snykOutput)
+
+                    // Append the results to the build log
+                    sh 'echo "Snyk scan completed." >> build-log.txt'
+                    sh "echo 'Snyk Scan Results:\n${snykOutput}' >> build-log.txt"
 
                     }
                 }
@@ -54,7 +59,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        writeFile(file: 'build-log.txt', text: "Vulnerabilities found or Snyk scan failed. Review the Snyk report for details.\n", append: true)
+                         sh 'echo "Vulnerabilities found or Snyk scan failed. Review the Snyk report for details." >> build-log.txt'
                     }
                 }
             }
