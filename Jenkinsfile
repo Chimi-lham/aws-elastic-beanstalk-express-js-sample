@@ -12,10 +12,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Initialize the log file
-                    def logMessage = "Installing dependencies...\n"
-                    writeFile(file: 'build-log.txt', text: logMessage)
-
+                                        
                     // Install the required dependencies
                     sh 'npm install --save'
                     logMessage = "Dependencies installed.\n"
@@ -44,8 +41,6 @@ pipeline {
                         def snykOutput = sh(script: 'snyk test --severity-threshold=high', returnStdout: true)
                         writeFile(file: 'snyk-report.txt', text: snykOutput)
 
-                        // Append the results to the build log
-                        echo "Snyk scan completed." >> 'build-log.txt'
                     }
                 }
             }
