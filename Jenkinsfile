@@ -45,9 +45,7 @@ pipeline {
                         writeFile(file: 'snyk-report.txt', text: snykOutput)
 
                         // Append the results to the build log
-                        writeFile(file: 'build-log.txt', text: "Snyk scan completed.\n", append: true)
-                        writeFile(file: 'build-log.txt', text: "Snyk Scan Results:\n", append: true)
-                        writeFile(file: 'build-log.txt', text: snykOutput, append: true)
+                        echo "Snyk scan completed." >> 'build-log.txt'
                     }
                 }
             }
