@@ -49,7 +49,7 @@ pipeline {
             post {
                 success {
                     script {
-                        writeFile(file: 'build-log.txt', text: "No critical vulnerabilities found in dependencies.\n", append: true)
+                        sh 'echo "No critical vulnerabilities found in dependencies." >> build-log.txt'
                     }
                 }
                 failure {
