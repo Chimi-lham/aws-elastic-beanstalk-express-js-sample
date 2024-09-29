@@ -59,6 +59,13 @@ pipeline {
                     }
                 }
             }
+            stage('Synk Monitor'){
+            steps{
+              script{
+              //monitor the project for security issues
+               sh 'synk monitor'
+              }}
+            }
         }
     }
 
